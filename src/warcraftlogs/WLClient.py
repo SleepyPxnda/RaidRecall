@@ -11,15 +11,14 @@ from src.utils import get_bot_settings
 
 
 class WLClient:
-    def __init__(self, link: str):
+    def __init__(self, code: str):
         self.renew_timestamp = datetime.datetime.now()
         self.bearer_token = None
-        self.link = link
+        self.code = code
 
     def retrieve_auth_token(self):
         client_id = get_bot_settings("wl_client_id")
         client_secret = get_bot_settings("wl_client_secret")
-
 
         basic_auth = HTTPBasicAuth(client_id, client_secret)
         token_response = requests.post("https://www.warcraftlogs.com/oauth/token", auth=basic_auth, data={'grant_type': 'client_credentials'})
@@ -35,10 +34,7 @@ class WLClient:
         transport = AIOHTTPTransport(url="https://www.warcraftlogs.com/api/v2/client", headers={'Authorization': 'Bearer ' + self.bearer_token})
         client = Client(transport=transport, fetch_schema_from_transport=True, execute_timeout=30)
         query = gql(string_query)
-        result = await client.execute_async(query, variable_values={"id": "WFbmDarcwqHpjvTh"})
-
-        #with open("warcraftlogs/response_mock.json", encoding="utf8") as f:
-        #    result = json.load(f)
+        result = await client.execute_async(query, variable_values={"id": self.code})
 
         return result
 

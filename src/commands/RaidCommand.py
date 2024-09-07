@@ -30,7 +30,7 @@ class RaidCommandCog(commands.Cog):
         description="Prints the log of a raid based on the warcraftlogs link",
     )
     @commands.guild_only()
-    async def _raid(self, ctx: discord.ApplicationContext, warcraftlogs_link: discord.Option(str)):
+    async def _raid(self, ctx: discord.ApplicationContext, warcraftlogs_code: discord.Option(str)):
         """
         The event listener for the raid command.
 
@@ -40,15 +40,20 @@ class RaidCommandCog(commands.Cog):
         Parameters:
            ctx (discord.ApplicationContext): The context in which the command was used.
         """
+
+        if len(warcraftlogs_code) != 16:
+            await ctx.respond(ephemeral=True, content="Invalid warcraftlogs code.")
+            return
+
         await ctx.defer(ephemeral=False)
 
-        client = WLClient(warcraftlogs_link)
+        client = WLClient(warcraftlogs_code)
 
         result = await client.request_data()
 
         formatter = WLFormatter(result)
 
-        main_embed = formatter.create_embed()
+        main_embed = formatter.create_embed(warcraftlogs_code)
 
         message = await ctx.respond(ephemeral=False, embed=main_embed)
 

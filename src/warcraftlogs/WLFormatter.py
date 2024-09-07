@@ -14,7 +14,7 @@ class WLFormatter:
     def __init__(self, data):
         self.data = data
 
-    def create_embed(self):
+    def create_embed(self, code):
         embed = discord.Embed(
             title=self.read_embed_title(),
             description=self.read_embed_description(),
@@ -22,11 +22,12 @@ class WLFormatter:
 
         kill_value, boss_name = self.read_boss_lists()
 
-
         embed.add_field(name="Result", value="\n".join(kill_value), inline=True)
         embed.add_field(name="Boss", value="\n".join(boss_name), inline=True)
-        # TODO Add important links
 
+        embed.add_field(name="Useful Links", value="https://www.warcraftlogs.com/reports/" + code + " \n"
+                                          + "https://www.wipefest.gg/report/" + code + " \n"
+                                          + "https://wowanalyzer.com/report/" + code + " \n", inline=False)
         return embed
 
     def create_performance_embeds(self):
@@ -40,25 +41,21 @@ class WLFormatter:
                 title=data["boss_name"],
             )
 
-            dps_strings = [str(dps["dmg_percent"]) + " " + str(dps["ilvl"]) +  " " + FormattingUtil.get_class_emoji_for_class(dps["class"]) + " " + dps["name"]+ " " + dps["spec"] for dps in data["dps"]]
+            dps_strings = [FormattingUtil.get_role_icon_for_role(str(dps["role"])) + " " + str(dps["dmg_percent"]) + " " + str(dps["ilvl"]) +  " " + FormattingUtil.get_class_emoji_for_class(dps["class"]) + " " + dps["name"] for dps in data["dps"]]
 
             split_dps_strings = chunks(dps_strings, 5)
 
-            initial_name = "DPS"
+            embed.add_field(name="DPS", value="Role/Parse/ILvl/Class/Name", inline=True)
             for split_string in split_dps_strings:
-                embed.add_field(name=initial_name, value="\n".join(split_string), inline=False)
-                initial_name = ""
+                embed.add_field(name="", value="\n".join(split_string), inline=False)
 
-
-
-            hps_strings = [str(hps["hps_percent"]) + " " + str(hps["ilvl"]) +  " " + FormattingUtil.get_class_emoji_for_class(hps["class"]) + hps["name"] +" " + hps["spec"] for hps in data["hps"]]
+            hps_strings = [FormattingUtil.get_role_icon_for_role(str(hps["role"])) + " " + str(hps["hps_percent"]) + " " + str(hps["ilvl"]) + " " + FormattingUtil.get_class_emoji_for_class(hps["class"]) + " " + hps["name"] for hps in data["hps"]]
 
             split_hps_strings = chunks(hps_strings, 5)
 
-            initial_name = "HPS"
+            embed.add_field(name="HPS", value="Role/Parse/ILvl/Class/Name", inline=True)
             for split_string in split_hps_strings:
-                embed.add_field(name=initial_name, value="\n".join(split_string), inline=False)
-                initial_name = ""
+                embed.add_field(name="", value="\n".join(split_string), inline=False)
 
             embeds.append(embed)
 
@@ -68,10 +65,10 @@ class WLFormatter:
         source_starttime = self.data["reportData"]["report"]["startTime"]
         source_endtime = self.data["reportData"]["report"]["endTime"]
 
-        startTime = datetime.fromtimestamp(float(source_starttime) / 1e3)
-        endTime = datetime.fromtimestamp(float(source_endtime) / 1e3)
+        start_time = datetime.fromtimestamp(float(source_starttime) / 1e3)
+        end_time = datetime.fromtimestamp(float(source_endtime) / 1e3)
 
-        duration = endTime - startTime
+        duration = end_time - start_time
 
         hours, remainder = divmod(duration.total_seconds(), 3600)
         minutes, seconds = divmod(remainder, 60)
@@ -110,9 +107,8 @@ class WLFormatter:
 
 
         boss_data = [value for value in boss_data.values()]
-        print(boss_data)
-        kill_value = [boss["name"] for boss in boss_data]
-        boss_name = [FormattingUtil.get_embed_value_for_fight_kill(boss["tries"], boss["kill"], boss["best_percentage"]) for boss in boss_data]
+        boss_name = [boss["name"] for boss in boss_data]
+        kill_value = [FormattingUtil.get_embed_value_for_fight_kill(boss["tries"], boss["kill"], boss["best_percentage"]) for boss in boss_data]
 
         return kill_value, boss_name
 

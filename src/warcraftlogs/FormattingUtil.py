@@ -1,6 +1,16 @@
 class FormattingUtil:
 
     @staticmethod
+    def get_role_icon_for_role(role):
+        if role.lower() == 'tank':
+            return "<:RoleTank:1281969538740523089>"
+        if role.lower() == 'dps':
+            return "<:RoleDPS:1281969535599120526>"
+        if role.lower() == 'healer':
+            return "<:RoleHealer:1281969537490882671>"
+        return "<:read_the_error:508733110154690560>"
+
+    @staticmethod
     def get_class_emoji_for_class(class_name):
         if class_name.lower() == 'warrior':
             return "<:ClassIcon_warrior:1038504922225844265>"
