@@ -1,11 +1,10 @@
 import discord
-from discord.types.channel import ChannelType
 
-from src.utils import debug_green, EmbedBuilder
 from discord.ext import commands
 
-from src.warcraftlogs.WLClient import WLClient
-from src.warcraftlogs.WLFormatter import WLFormatter
+from commands.warcraftlogs.WLClient import WLClient
+from commands.warcraftlogs.WLFormatter import WLFormatter
+from src.utils import debug_green, debug_blue
 
 
 class RaidCommandCog(commands.Cog):
@@ -60,6 +59,8 @@ class RaidCommandCog(commands.Cog):
         thread = await ctx.channel.create_thread(name="DPS/HPS Scores", message=message)
 
         embeds = formatter.create_performance_embeds()
+
+        debug_blue("DISCORD", "Sending " + str(len(embeds)) + " boss embeds into thread")
 
         for embed in embeds:
             await thread.send(embed=embed)

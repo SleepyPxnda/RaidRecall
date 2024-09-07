@@ -1,5 +1,5 @@
 import discord
-from src.utils import debug_green, EmbedBuilder
+from utils import debug_green, EmbedBuilder
 from discord.ext import commands
 
 class HelpCommandCog(commands.Cog):

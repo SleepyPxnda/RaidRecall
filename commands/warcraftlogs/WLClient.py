@@ -1,6 +1,4 @@
 import datetime
-import json
-from types import SimpleNamespace
 
 import requests
 from gql import Client, gql
@@ -32,7 +30,7 @@ class WLClient:
             self.retrieve_auth_token()
             debug_yellow("TOKEN", "Token Timeout at " + str(self.renew_timestamp))
 
-        with open("warcraftlogs/raid_schema.graphql") as f:
+        with open("utils/raid_schema.graphql") as f:
             string_query = f.read()
 
         transport = AIOHTTPTransport(url="https://www.warcraftlogs.com/api/v2/client", headers={'Authorization': 'Bearer ' + self.bearer_token})

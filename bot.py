@@ -1,6 +1,6 @@
 import discord
 
-from utils import extension_loader, get_bot_settings, clear, banner
+from src.utils import clear, banner, extension_loader, get_bot_settings
 
 bot = discord.Bot(intents=discord.Intents.all())
 

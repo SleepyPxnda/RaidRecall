@@ -2,17 +2,17 @@ from datetime import datetime
 
 import discord
 
+from commands.warcraftlogs.FormattingUtil import FormattingUtil
 from src.utils import debug_red
-from src.warcraftlogs.FormattingUtil import FormattingUtil
-
 
 def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
 
+
 class WLFormatter:
-    def __init__(self, data):
+    def __init__(self, data : any):
         self.data = data
 
     def create_embed(self, code):
