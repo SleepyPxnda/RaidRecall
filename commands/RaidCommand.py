@@ -4,7 +4,7 @@ from discord.ext import commands
 
 from commands.warcraftlogs.WLClient import WLClient
 from commands.warcraftlogs.WLFormatter import WLFormatter
-from src.utils import debug_green, debug_blue
+from utils import debug_green, debug_blue
 
 
 class RaidCommandCog(commands.Cog):

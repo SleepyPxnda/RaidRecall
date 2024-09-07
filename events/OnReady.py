@@ -1,7 +1,7 @@
 from discord.ext import commands
 import discord
 
-from src.utils import debug_yellow, debug_stats, get_bot_settings
+from utils import debug_yellow, debug_stats, get_bot_settings
 
 
 class OnReadyCog(commands.Cog):

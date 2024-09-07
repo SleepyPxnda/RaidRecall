@@ -5,7 +5,7 @@ from gql import Client, gql
 from gql.transport.aiohttp import AIOHTTPTransport
 from requests.auth import HTTPBasicAuth
 
-from src.utils import get_bot_settings, debug_yellow, debug_green
+from utils import get_bot_settings, debug_yellow, debug_green
 
 
 class WLClient:

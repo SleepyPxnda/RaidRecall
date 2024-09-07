@@ -3,7 +3,7 @@ from datetime import datetime
 import discord
 
 from commands.warcraftlogs.FormattingUtil import FormattingUtil
-from src.utils import debug_red
+from utils import debug_red
 
 def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
