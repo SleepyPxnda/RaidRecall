@@ -1,4 +1,6 @@
 import discord
+from discord.types.channel import ChannelType
+
 from src.utils import debug_green, EmbedBuilder
 from discord.ext import commands
 
@@ -46,9 +48,16 @@ class RaidCommandCog(commands.Cog):
 
         formatter = WLFormatter(result)
 
-        embed = formatter.create_embed()
+        main_embed = formatter.create_embed()
 
-        await ctx.respond(ephemeral=False, embed=embed)
+        message = await ctx.respond(ephemeral=False, embed=main_embed)
+
+        thread = await ctx.channel.create_thread(name="DPS/HPS Scores", message=message)
+
+        embeds = formatter.create_performance_embeds()
+
+        for embed in embeds:
+            await thread.send(embed=embed)
 
 
 def setup(bot):

@@ -28,22 +28,17 @@ class WLClient:
         self.renew_timestamp = datetime.datetime.now().timestamp() + token_response.json()["expires_in"]
 
     async def request_data(self):
-        #if self.bearer_token is None or self.renew_timestamp < datetime.datetime.now():
-        #    self.retrieve_auth_token()
+        if self.bearer_token is None or self.renew_timestamp < datetime.datetime.now():
+            self.retrieve_auth_token()
+        with open("warcraftlogs/raid_schema.graphql") as f:
+            string_query = f.read()
+        transport = AIOHTTPTransport(url="https://www.warcraftlogs.com/api/v2/client", headers={'Authorization': 'Bearer ' + self.bearer_token})
+        client = Client(transport=transport, fetch_schema_from_transport=True, execute_timeout=30)
+        query = gql(string_query)
+        result = await client.execute_async(query, variable_values={"id": "WFbmDarcwqHpjvTh"})
 
-        #with open("warcraftlogs/raid_schema.graphql") as f:
-        #    string_query = f.read()
+        #with open("warcraftlogs/response_mock.json", encoding="utf8") as f:
+        #    result = json.load(f)
 
-        #transport = AIOHTTPTransport(url="https://www.warcraftlogs.com/api/v2/client", headers={'Authorization': 'Bearer ' + self.bearer_token})
-
-        #client = Client(transport=transport, fetch_schema_from_transport=True)
-
-        #query = gql(string_query)
-
-        #result = await client.execute_async(query, variable_values={"id": "wv1Z6QydcDbAV9NR"})
-
-        with open("warcraftlogs/response_mock.json", encoding="utf8") as f:
-            result = json.load(f)
-
-        return result["data"]
+        return result
 
