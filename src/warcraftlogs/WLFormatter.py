@@ -2,6 +2,7 @@ from datetime import datetime
 
 import discord
 
+from src.utils import debug_red
 from src.warcraftlogs.FormattingUtil import FormattingUtil
 
 
@@ -36,7 +37,6 @@ class WLFormatter:
         embeds = []
 
         for data in performance_data:
-            print(data)
             embed = discord.Embed(
                 title=data["boss_name"],
             )
@@ -120,11 +120,9 @@ class WLFormatter:
         hps_parses = self.data["reportData"]["report"]["hpsParses"]["data"]
 
         unique_boss_ids = set([fight["encounterID"] for fight in fights])
-        print(unique_boss_ids)
 
         for boss_id in unique_boss_ids:
             fights_for_boss = [fight for fight in fights if fight["encounterID"] == boss_id]
-            print("Fights for ", boss_id, fights_for_boss)
             unique_players_in_boss_fight = {}
 
             for fight in fights_for_boss:
@@ -140,11 +138,11 @@ class WLFormatter:
             hps_parses_for_boss = [hps_data for hps_data in hps_parses if hps_data["encounter"]["id"] == boss_id]
 
             if len(dps_parses_for_boss) == 0:
-                print("No dps parses found for " + str(boss_id))
+                debug_red("RANKING", "No dps parses found for " + str(boss_id))
                 continue
 
             if len(hps_parses_for_boss) == 0:
-                print("No hps parses found for " + str(boss_id))
+                debug_red("RANKING", "No hps parses found for " + str(boss_id))
                 continue
 
             dmg_list = self.create_dps_list_for_boss(dps_parses_for_boss[0], unique_players_in_boss_fight)
@@ -197,8 +195,6 @@ class WLFormatter:
                         "participated_fights": player["participated_fights"],
                         "ilvl": character["bracketData"]
                     })
-
-        print(result)
         return result
 
     def create_hps_list_for_boss(self, hps_parses, players):
@@ -239,7 +235,5 @@ class WLFormatter:
                         "participated_fights": player["participated_fights"],
                         "ilvl": character["bracketData"]
                     })
-
-        print(result)
         return result
 

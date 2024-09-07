@@ -7,7 +7,7 @@ from gql import Client, gql
 from gql.transport.aiohttp import AIOHTTPTransport
 from requests.auth import HTTPBasicAuth
 
-from src.utils import get_bot_settings
+from src.utils import get_bot_settings, debug_yellow, debug_green
 
 
 class WLClient:
@@ -28,13 +28,19 @@ class WLClient:
 
     async def request_data(self):
         if self.bearer_token is None or self.renew_timestamp < datetime.datetime.now():
+            debug_yellow("TOKEN", "Renewing Token")
             self.retrieve_auth_token()
+            debug_yellow("TOKEN", "Token Timeout at " + str(self.renew_timestamp))
+
         with open("warcraftlogs/raid_schema.graphql") as f:
             string_query = f.read()
+
         transport = AIOHTTPTransport(url="https://www.warcraftlogs.com/api/v2/client", headers={'Authorization': 'Bearer ' + self.bearer_token})
         client = Client(transport=transport, fetch_schema_from_transport=True, execute_timeout=30)
         query = gql(string_query)
+        debug_green("GRAPHQL", "Requesting data from WCL ...")
         result = await client.execute_async(query, variable_values={"id": self.code})
+        debug_green("GRAPHQL", "Data received for code " + str(self.code))
 
         return result
 
